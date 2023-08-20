@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  pull_request:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: チェックアウト
+        uses: actions/checkout@v2
+      - name: SHA256取得
+        uses: MASTER_SHA=`sha256sum static/START2.json`
+      - name: マスターデータ更新
+        run: node ci/update.mjs
+      - name: バージョン更新
+        run:
+          if [$MASTER_SHA -eq `sha256sum static/START2.json`]; then
+            # SHAが一致していたら後の処理は不要なので正常終了させる
+            exit 0
+          fi
+          npm version patch --no-git-tag-version
+      - name: コミット
+        uses: EndBug/add-and-commit@v9
+        with:
+          tag: "echo v`npm pkg get version` | tr -d '\"' --force"
+      - name: ビルド
+        run: npm run build
+      - name: リリース
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
