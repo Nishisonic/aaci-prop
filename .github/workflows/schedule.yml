@@ -16,11 +16,11 @@ jobs:
       - name: チェックアウト
         uses: actions/checkout@v2
       - name: SHA256取得
-        uses: MASTER_SHA=`sha256sum static/START2.json`
+        run: MASTER_SHA=`sha256sum static/START2.json`
       - name: マスターデータ更新
         run: node ci/update.mjs
       - name: バージョン更新
-        run:
+        run: |
           if [$MASTER_SHA -eq `sha256sum static/START2.json`]; then
             # SHAが一致していたら後の処理は不要なので正常終了させる
             exit 0
