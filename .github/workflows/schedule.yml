@@ -14,7 +14,7 @@ jobs:
         with:
           node-version: 20
       - name: チェックアウト
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: SHA256取得
         run: MASTER_SHA=`sha256sum static/START2.json`
       - name: マスターデータ更新
@@ -30,11 +30,11 @@ jobs:
           TAG=v`npm pkg get version | tr -d '"'`
       - name: コミット
         uses: EndBug/add-and-commit@v9
-        with:
-          tag: "$TAG --force"
-      - name: ビルド
-        run: npm run build
-      - name: リリース
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   with:
+      #     tag: "$TAG --force"
+      # - name: ビルド
+      #   run: npm run build
+      # - name: リリース
+      #   run: npm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
