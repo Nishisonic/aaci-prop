@@ -21,7 +21,8 @@ jobs:
         run: node ci/update.mjs
       - name: バージョン更新
         run: |
-          if [$MASTER_SHA -eq `sha256sum static/START2.json`]; then
+          LATEST_MASTER_SHA=`sha256sum static/START2.json`
+          if test "$MASTER_SHA" = "$LATEST_MASTER_SHA"; then
             # SHAが一致していたら後の処理は不要なので正常終了させる
             exit 0
           fi
