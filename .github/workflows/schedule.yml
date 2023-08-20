@@ -23,14 +23,14 @@ jobs:
         run: |
           LATEST_MASTER_SHA=`sha256sum static/START2.json`
           if test "$MASTER_SHA" = "$LATEST_MASTER_SHA"; then
-            # SHAが一致していたら後の処理は不要なので正常終了させる
+            # SHAが一致していたら後の処理は不要なので終了させる
             exit 0
           fi
           npm version patch --no-git-tag-version
       - name: コミット
         uses: EndBug/add-and-commit@v9
         with:
-          tag: "echo v`npm pkg get version` | tr -d '\"' --force"
+          tag: "`echo v\`npm pkg get version\` | tr -d '\"' --force`"
       - name: ビルド
         run: npm run build
       - name: リリース
