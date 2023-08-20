@@ -28,9 +28,10 @@ jobs:
           fi
           npm version patch --no-git-tag-version
       - name: コミット
+        run: TAG=v`npm pkg get version | tr -d '"'`
         uses: EndBug/add-and-commit@v9
         with:
-          tag: `echo v\`npm pkg get version\` | tr -d '\"' --force`
+          tag: "$TAG --force"
       - name: ビルド
         run: npm run build
       - name: リリース
