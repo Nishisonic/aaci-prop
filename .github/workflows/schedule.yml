@@ -30,7 +30,8 @@ jobs:
           TAG=v`npm pkg get version | tr -d '"'`
       - name: コミット
         uses: EndBug/add-and-commit@v9
-      #   with:
+        with:
+          new_branch: feature/start2
       #     tag: "$TAG --force"
       # - name: ビルド
       #   run: npm run build
