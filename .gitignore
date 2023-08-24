@@ -1,5 +1,4 @@
 /node_modules/
 /dist/
 /esm/
-test/debug.log
-test/index.js
+/test/debug.log

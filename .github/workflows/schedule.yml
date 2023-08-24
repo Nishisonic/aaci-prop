@@ -1,7 +1,6 @@
 name: CI
 
 on:
-  pull_request:
   schedule:
     - cron: "0 0 * * *"
 
@@ -13,26 +12,49 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+          registry-url: 'https://registry.npmjs.org/'
+          scope: '@Nishisonic'
       - name: チェックアウト
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: SHA256取得
-        uses: MASTER_SHA=`sha256sum static/START2.json`
+        id: master-vars
+        run: |
+          sha=`sha256sum static/START2.json`
+          echo "sha=${sha}" >> $GITHUB_OUTPUT
       - name: マスターデータ更新
         run: node ci/update.mjs
       - name: バージョン更新
-        run:
-          if [$MASTER_SHA -eq `sha256sum static/START2.json`]; then
-            # SHAが一致していたら後の処理は不要なので正常終了させる
+        id: tag-vars
+        run: |
+          sha=`sha256sum static/START2.json`
+          if test "${{steps.master-vars.outputs.sha}}" = "${sha}"; then
+            # SHAが一致していたら後の処理は不要なので終了させる
+            echo match=${sha}
+            echo skip.
             exit 0
+          else
+            echo before=${{steps.master-vars.outputs.sha}}
+            echo after =${sha}
           fi
           npm version patch --no-git-tag-version
+          tag=v`npm pkg get version | tr -d '"'`
+          echo "tag=${tag}" >> $GITHUB_OUTPUT
       - name: コミット
+        if: ${{!!steps.tag-vars.outputs.tag}}
         uses: EndBug/add-and-commit@v9
-        with:
-          tag: "echo v`npm pkg get version` | tr -d '\"' --force"
+      - name: タグ
+        if: ${{!!steps.tag-vars.outputs.tag}}
+        run: |
+          tag=${{steps.tag-vars.outputs.tag}}
+          git tag ${tag}
+          git push origin ${tag}
       - name: ビルド
-        run: npm run build
+        if: ${{!!steps.tag-vars.outputs.tag}}
+        run: |
+          npm install
+          npm run build
       - name: リリース
+        if: ${{!!steps.tag-vars.outputs.tag}}
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

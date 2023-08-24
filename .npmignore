@@ -1,0 +1,10 @@
+/.github/
+/ci/
+/node_modules/
+/src/
+/test/
+.eslintignore
+.eslintrc.js
+.prettierrc
+tsconfig.esm.json
+tsconfig.json
