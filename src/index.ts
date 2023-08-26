@@ -1,13 +1,10 @@
 import { UserShip } from "./UserShip";
 import { calc } from "./calc";
 import { AACIRate, Apidata, MasterItem, MasterShip, Ship } from "../index";
-import { readFileSync } from "fs";
 
 export default function (
   ships: Ship[],
-  apidata: Apidata = JSON.parse(
-    readFileSync("static/START2.json", "utf8").toString(),
-  ),
+  apidata: Apidata = require("../static/START2.json"),
 ): AACIRate[] {
   const masterShip: Readonly<{
     [key: number]: MasterShip;
