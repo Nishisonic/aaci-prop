@@ -57,4 +57,4 @@ jobs:
         if: ${{!!steps.tag-vars.outputs.tag}}
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
