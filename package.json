@@ -1,6 +1,6 @@
 {
   "name": "aaci-prop",
-  "version": "1.2.33",
+  "version": "1.2.34",
   "description": "",
   "main": "dist/index.js",
   "module": "esm/index.js",
